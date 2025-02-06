@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">App Scheduler</string>
+    <string name="scheduled_apps">Scheduled Apps</string>
+    <string name="installed_apps">Installed Apps</string>
+    <string name="apps">Apps</string>
+    <string name="schedule">Schedule</string>
+    <string name="exit">Exit</string>
+    <string name="exit_confirmation">Are you sure that you want to exit the app?</string>
+    <string name="try_again">Try Again</string>
+    <string name="failed_to_load_apps">Oops! we couldn\'t load all your installed apps.</string>
+    <string name="fetching_installed_apps">Fetching Installed Apps</string>
+    <string name="schedule_list">Schedule List</string>
+    <string name="instructions">You haven\'t scheduled anything yet!\n\nPick an app from the app list to make a schedule.</string>
+    <string name="please_choose_a_valid_time">Please choose a valid time</string>
+    <string name="please_choose_a_valid_date">Please choose a valid date</string>
 </resources>

@@ -8,7 +8,14 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.meldcx.appscheduler.ui.fragments.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="@string/installed_apps"
+        tools:layout="@layout/fragment_home" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/scheduleFragment"
+        android:name="com.meldcx.appscheduler.ui.fragments.ScheduleFragment"
+        android:label="@string/schedule_list"
+        tools:layout="@layout/fragment_schedule" />
 
 </navigation>

@@ -57,12 +57,6 @@ dependencies {
     // Encrypted Shared Preferences
     implementation(libs.androidx.security.crypto)
 
-    // Retrofit
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-    implementation(libs.okhttp)
-    implementation(libs.okhttp3.logging.interceptor)
-
     // Coroutines
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.core)
@@ -80,9 +74,6 @@ dependencies {
     // Navigation Component
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-
-    // Glide
-    implementation(libs.glide)
 
     // Room
     implementation(libs.androidx.room.ktx)
