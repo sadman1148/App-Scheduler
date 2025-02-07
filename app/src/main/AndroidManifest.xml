@@ -9,10 +9,6 @@
         </intent>
     </queries>
 
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
-    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-
     <application
         android:name=".AppScheduler"
         android:allowBackup="true"
@@ -33,10 +29,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name=".services.AlarmService"
-            android:foregroundServiceType="specialUse"
-            android:permission="android.permission.FOREGROUND_SERVICE" />
     </application>
 
 </manifest>

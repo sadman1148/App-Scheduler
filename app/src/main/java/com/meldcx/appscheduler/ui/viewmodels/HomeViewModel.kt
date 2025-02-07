@@ -10,13 +10,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.Constraints
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import com.meldcx.appscheduler.data.models.App
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
+import com.meldcx.appscheduler.utils.Constants
 import com.meldcx.appscheduler.utils.Utility
+import com.meldcx.appscheduler.workers.AppLaunchWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import timber.log.Timber
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,10 +45,27 @@ class HomeViewModel @Inject constructor(
             if (dataRepository.checkIfScheduleExists(time)) {
                 _toastObserver.value = true
             } else {
-                dataRepository.insertScheule(Schedule(time, app.packageName))
-                Utility.scheduleAppLaunch(application.applicationContext, app.packageName, time)
+                val id = scheduleAppLaunch(app.packageName, time - System.currentTimeMillis())
+                dataRepository.insertScheule(Schedule(time, app.packageName, id))
             }
         }
+    }
+
+    private fun scheduleAppLaunch(packageName: String, delayInMillis: Long): UUID {
+        val workData = workDataOf(Constants.WORM_PACKAGE_NAME_KEY to packageName)
+
+        val workRequest = OneTimeWorkRequestBuilder<AppLaunchWorker>()
+            .setInitialDelay(delayInMillis, java.util.concurrent.TimeUnit.MILLISECONDS)
+            .setInputData(workData)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiresBatteryNotLow(true)
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(application.applicationContext).enqueue(workRequest)
+        return workRequest.id
     }
 
     fun fetchApps() {

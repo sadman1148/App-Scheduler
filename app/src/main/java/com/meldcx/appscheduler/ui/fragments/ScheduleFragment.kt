@@ -60,6 +60,6 @@ class ScheduleFragment : Fragment(), ScheduleClickListener {
     }
 
     override fun onScheduleClick(schedule: Schedule, pos: Int) {
-        vm.handleScheduleDeletion(requireContext(), schedule, pos)
+        vm.handleScheduleDeletion(schedule, pos)
     }
 }

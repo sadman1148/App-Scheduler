@@ -1,19 +1,22 @@
 package com.meldcx.appscheduler.ui.viewmodels
 
-import android.content.Context
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
-import com.meldcx.appscheduler.utils.Utility
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class ScheduleViewModel @Inject constructor(private val dataRepository: DataRepository): ViewModel() {
+class ScheduleViewModel @Inject constructor(
+    private val application: Application,
+    private val dataRepository: DataRepository
+) : ViewModel() {
 
     private var _schedules = MutableLiveData<List<Schedule>>()
     val schedules: LiveData<List<Schedule>> get() = _schedules
@@ -27,10 +30,10 @@ class ScheduleViewModel @Inject constructor(private val dataRepository: DataRepo
         }
     }
 
-    fun handleScheduleDeletion(context: Context, schedule: Schedule, pos: Int) {
+    fun handleScheduleDeletion(schedule: Schedule, pos: Int) {
         viewModelScope.launch {
             dataRepository.deleteSchedule(schedule.timeInMilli)
-            Utility.cancelScheduledAppLaunch(context, schedule.packageName)
+            WorkManager.getInstance(application.applicationContext).cancelWorkById(schedule.workId)
             _status.value = pos
         }
     }

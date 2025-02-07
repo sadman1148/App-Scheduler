@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.meldcx.appscheduler.R
@@ -66,7 +65,7 @@ class HomeFragment : Fragment(), AppClickListener {
             vm.toastObserver.observe(viewLifecycleOwner) {
                 Toast.makeText(
                     requireContext(),
-                    "An app is already scheduled at that time",
+                    getString(R.string.app_scheduled_warning),
                     Toast.LENGTH_SHORT
                 ).show()
             }
