@@ -59,6 +59,11 @@ class ScheduleFragment : Fragment(), ScheduleClickListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        scheduleAdapter.checkForTimeUpdates()
+    }
+
     override fun onScheduleClick(schedule: Schedule, pos: Int) {
         vm.handleScheduleDeletion(schedule, pos)
     }

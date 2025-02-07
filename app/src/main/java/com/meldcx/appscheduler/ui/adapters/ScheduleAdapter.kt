@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.data.models.Schedule
@@ -31,6 +30,10 @@ class ScheduleAdapter(
     fun updateSchedules(pos: Int) {
         schedules.removeAt(pos)
         notifyItemRemoved(pos)
+    }
+
+    fun checkForTimeUpdates() {
+        notifyItemRangeChanged(0, itemCount)
     }
 
     inner class ViewHolder(private val binding: ScheduleRecyclerItemBinding) :
@@ -56,21 +59,13 @@ class ScheduleAdapter(
                 tvDate.text = timeParts[1]
                 ivAppIcon.setImageDrawable(appIcon)
                 if (schedule.timeInMilli < System.currentTimeMillis()) {
-                    tvTime.setTextColor(ContextCompat.getColor(context, R.color.red))
-                    clScheduleInfoHolder.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_red))
-                } else {
-                    tvTime.setTextColor(ContextCompat.getColor(context, R.color.green))
-                    clScheduleInfoHolder.setBackgroundColor(ContextCompat.getColor(context, R.color.soft_green))
+                    clScheduleInfoHolder.alpha = 0.3F
                 }
                 cvScheduleInfoHolder.setOnClickListener {
                     if (ivDelete.visibility == View.VISIBLE) {
                         ivDelete.visibility = View.GONE
-                        divider.visibility = View.GONE
-                        tvAppName.visibility = View.VISIBLE
                     } else {
                         ivDelete.visibility = View.VISIBLE
-                        divider.visibility = View.VISIBLE
-                        tvAppName.visibility = View.GONE
                     }
                 }
                 ivDelete.setOnClickListener {
