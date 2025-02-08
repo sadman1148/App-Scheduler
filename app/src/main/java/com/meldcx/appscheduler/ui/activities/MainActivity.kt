@@ -24,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
@@ -59,7 +60,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         enableEdgeToEdge()
         setContentView(binding.root)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+        var isNewLaunch = true
+        ViewCompat.setOnApplyWindowInsetsListener(binding.main) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
@@ -68,15 +70,20 @@ class MainActivity : AppCompatActivity() {
         window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentContainerView) as NavHostFragment
         navController = navHostFragment.navController
-        navController.addOnDestinationChangedListener {_, destination, _ ->
-            if (destination.id == R.id.splashFragment) {
-                supportActionBar?.hide()
-                binding.bottomNavigationView.visibility = View.GONE
-            } else {
-                supportActionBar?.show()
-                supportActionBar?.title = destination.label
-                binding.bottomNavigationView.visibility = View.VISIBLE
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            if (isNewLaunch) {
+                if (destination.id == R.id.splashFragment) {
+                    WindowCompat.getInsetsController(window, window.decorView).hide(WindowInsetsCompat.Type.navigationBars())
+                    supportActionBar?.hide()
+                    binding.bottomNavigationView.visibility = View.GONE
+                } else {
+                    isNewLaunch = false
+                    WindowCompat.getInsetsController(window, window.decorView).show(WindowInsetsCompat.Type.navigationBars())
+                    supportActionBar?.show()
+                    binding.bottomNavigationView.visibility = View.VISIBLE
+                }
             }
+            supportActionBar?.title = destination.label
         }
         with(binding) {
             NavigationUI.setupWithNavController(bottomNavigationView, navController)

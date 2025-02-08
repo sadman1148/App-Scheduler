@@ -17,4 +17,5 @@
     <string name="whitelist_instructions">Please whitelist this app in the battery optimization list to allow it to launch scheduled apps properly.</string>
     <string name="config_description">Scheduler Accessibility Service</string>
     <string name="accessibility_instructions">Please turn on accessibility settings for launching scheduled app from the background.</string>
+    <string name="sponsored_by">Sponsored by</string>
 </resources>
