@@ -14,4 +14,7 @@
     <string name="please_choose_a_valid_time">Please choose a valid time</string>
     <string name="please_choose_a_valid_date">Please choose a valid date</string>
     <string name="app_scheduled_warning">An app is already scheduled at that time</string>
+    <string name="whitelist_instructions">Please whitelist this app in the battery optimization list to allow it to launch scheduled apps properly.</string>
+    <string name="config_description">Scheduler Accessibility Service</string>
+    <string name="accessibility_instructions">Please turn on accessibility settings for launching scheduled app from the background.</string>
 </resources>

@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.data.models.Schedule
@@ -64,8 +65,10 @@ class ScheduleAdapter(
                 cvScheduleInfoHolder.setOnClickListener {
                     if (ivDelete.visibility == View.VISIBLE) {
                         ivDelete.visibility = View.GONE
+                        cvParent.setCardBackgroundColor(null)
                     } else {
                         ivDelete.visibility = View.VISIBLE
+                        cvParent.setCardBackgroundColor(AppCompatResources.getColorStateList(context, R.color.bright_red))
                     }
                 }
                 ivDelete.setOnClickListener {

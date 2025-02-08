@@ -82,9 +82,6 @@ dependencies {
 
     // Timber
     implementation(libs.timber)
-
-    // WorkManager
-    implementation(libs.work.runtime.ktx)
 }
 
 // Allow references to generated code

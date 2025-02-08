@@ -65,7 +65,7 @@ class HomeFragment : Fragment(), AppClickListener {
             vm.toastObserver.observe(viewLifecycleOwner) {
                 Toast.makeText(
                     requireContext(),
-                    getString(R.string.app_scheduled_warning),
+                    it,
                     Toast.LENGTH_SHORT
                 ).show()
             }

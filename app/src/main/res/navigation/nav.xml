@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/splashFragment">
 
     <fragment
         android:id="@+id/homeFragment"
@@ -17,5 +17,10 @@
         android:name="com.meldcx.appscheduler.ui.fragments.ScheduleFragment"
         android:label="@string/schedule_list"
         tools:layout="@layout/fragment_schedule" />
+    <fragment
+        android:id="@+id/splashFragment"
+        android:name="com.meldcx.appscheduler.ui.fragments.SplashFragment"
+        android:label="Splash"
+        tools:layout="@layout/fragment_splash" />
 
 </navigation>

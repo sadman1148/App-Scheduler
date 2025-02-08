@@ -1,6 +1,9 @@
 package com.meldcx.appscheduler.ui.viewmodels
 
+import android.annotation.SuppressLint
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -10,19 +13,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.Constraints
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.data.models.App
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
+import com.meldcx.appscheduler.receivers.AlarmReceiver
 import com.meldcx.appscheduler.utils.Constants
-import com.meldcx.appscheduler.utils.Utility
-import com.meldcx.appscheduler.workers.AppLaunchWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,8 +31,8 @@ class HomeViewModel @Inject constructor(
     private var _appList = MutableLiveData<List<App>>()
     val appList: LiveData<List<App>> get() = _appList
 
-    private var _toastObserver = MutableLiveData<Boolean>()
-    val toastObserver: LiveData<Boolean> get() = _toastObserver
+    private var _toastObserver = MutableLiveData<String>()
+    val toastObserver: LiveData<String> get() = _toastObserver
 
     init {
         fetchApps()
@@ -43,29 +41,29 @@ class HomeViewModel @Inject constructor(
     fun verifySchedule(time: Long, app: App) {
         viewModelScope.launch {
             if (dataRepository.checkIfScheduleExists(time)) {
-                _toastObserver.value = true
+                _toastObserver.value = application.getString(R.string.app_scheduled_warning)
             } else {
-                val id = scheduleAppLaunch(app.packageName, time - System.currentTimeMillis())
-                dataRepository.insertScheule(Schedule(time, app.packageName, id))
+                scheduleAppLaunch(app.packageName, time)
+                dataRepository.insertScheule(Schedule(time, app.packageName))
+                _toastObserver.value = "${app.name} scheduled for launch"
             }
         }
     }
 
-    private fun scheduleAppLaunch(packageName: String, delayInMillis: Long): UUID {
-        val workData = workDataOf(Constants.WORM_PACKAGE_NAME_KEY to packageName)
-
-        val workRequest = OneTimeWorkRequestBuilder<AppLaunchWorker>()
-            .setInitialDelay(delayInMillis, java.util.concurrent.TimeUnit.MILLISECONDS)
-            .setInputData(workData)
-            .setConstraints(
-                Constraints.Builder()
-                    .setRequiresBatteryNotLow(true)
-                    .build()
-            )
-            .build()
-
-        WorkManager.getInstance(application.applicationContext).enqueue(workRequest)
-        return workRequest.id
+    @SuppressLint("MissingPermission") // alternative permission added
+    private fun scheduleAppLaunch(packageName: String, time: Long) {
+        val context = application.applicationContext
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AlarmReceiver::class.java).apply {
+            putExtra(Constants.PACKAGE_NAME_KEY, packageName)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            time.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
     }
 
     fun fetchApps() {

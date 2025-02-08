@@ -1,11 +1,14 @@
 package com.meldcx.appscheduler.ui.viewmodels
 
+import android.app.AlarmManager
 import android.app.Application
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +36,14 @@ class ScheduleViewModel @Inject constructor(
     fun handleScheduleDeletion(schedule: Schedule, pos: Int) {
         viewModelScope.launch {
             dataRepository.deleteSchedule(schedule.timeInMilli)
-            WorkManager.getInstance(application.applicationContext).cancelWorkById(schedule.workId)
+            (application.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
+                PendingIntent.getBroadcast(
+                    application.applicationContext,
+                    schedule.timeInMilli.toInt(),
+                    Intent(application.applicationContext.packageManager.getLaunchIntentForPackage(schedule.packageName)),
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            )
             _status.value = pos
         }
     }
