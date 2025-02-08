@@ -9,4 +9,6 @@
     <dimen name="sixteen_sp">16sp</dimen>
     <dimen name="fifty_dp">50dp</dimen>
     <dimen name="four_dp">4dp</dimen>
+    <dimen name="twenty_five_dp">25dp</dimen>
+    <dimen name="twelve_dp">12dp</dimen>
 </resources>

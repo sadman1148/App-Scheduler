@@ -8,13 +8,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.databinding.ScheduleRecyclerItemBinding
 import com.meldcx.appscheduler.ui.listeners.ScheduleClickListener
-import com.meldcx.appscheduler.utils.Utility
+import com.meldcx.appscheduler.utils.TimeUtil
 
 class ScheduleAdapter(
     private val context: Context,
@@ -24,6 +23,7 @@ class ScheduleAdapter(
 
     @SuppressLint("NotifyDataSetChanged")
     fun addSchedules(scheduleList: List<Schedule>) {
+        schedules.clear()
         schedules.addAll(scheduleList)
         notifyDataSetChanged()
     }
@@ -39,7 +39,7 @@ class ScheduleAdapter(
 
     inner class ViewHolder(private val binding: ScheduleRecyclerItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        fun bind(schedule: Schedule) {
+        fun bind(schedule: Schedule, position: Int) {
             var appName: String
             var appIcon: Drawable? = AppCompatResources.getDrawable(context, R.drawable.clear)
             context.packageManager.let {
@@ -53,26 +53,36 @@ class ScheduleAdapter(
                     "No App Found"
                 }
             }
-            val timeParts = Utility.parseTime(schedule.timeInMilli).split("_")
+            val timeParts = TimeUtil.parseTime(schedule.timeInMilli).split("_")
             with(binding) {
+                val isExpired = schedule.timeInMilli < System.currentTimeMillis()
                 tvAppName.text = appName
+                tvPackageName.text = schedule.packageName
                 tvTime.text = timeParts[0]
                 tvDate.text = timeParts[1]
                 ivAppIcon.setImageDrawable(appIcon)
-                if (schedule.timeInMilli < System.currentTimeMillis()) {
+                if (isExpired) {
                     clScheduleInfoHolder.alpha = 0.3F
                 }
-                cvScheduleInfoHolder.setOnClickListener {
-                    if (ivDelete.visibility == View.VISIBLE) {
-                        ivDelete.visibility = View.GONE
-                        cvParent.setCardBackgroundColor(null)
+                cvParent.setOnClickListener {
+                    if (cvDelete.visibility == View.VISIBLE) {
+                        cvDelete.visibility = View.GONE
                     } else {
-                        ivDelete.visibility = View.VISIBLE
-                        cvParent.setCardBackgroundColor(AppCompatResources.getColorStateList(context, R.color.bright_red))
+                        cvDelete.visibility = View.VISIBLE
+                    }
+                    if (!isExpired) {
+                        if (cvEdit.visibility == View.VISIBLE) {
+                            cvEdit.visibility = View.GONE
+                        } else {
+                            cvEdit.visibility = View.VISIBLE
+                        }
                     }
                 }
-                ivDelete.setOnClickListener {
-                    clickListener.onScheduleClick(schedule, position)
+                cvEdit.setOnClickListener {
+                    clickListener.onScheduleEditClick(schedule)
+                }
+                cvDelete.setOnClickListener {
+                    clickListener.onScheduleDeleteClick(schedule, position)
                 }
             }
         }
@@ -89,7 +99,7 @@ class ScheduleAdapter(
     }
 
     override fun onBindViewHolder(holder: ScheduleAdapter.ViewHolder, position: Int) {
-        holder.bind(schedules[position])
+        holder.bind(schedules[position], position)
     }
 
     override fun getItemCount() = schedules.size

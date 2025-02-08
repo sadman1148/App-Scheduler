@@ -24,10 +24,17 @@ class ScheduleViewModel @Inject constructor(
     private var _schedules = MutableLiveData<List<Schedule>>()
     val schedules: LiveData<List<Schedule>> get() = _schedules
 
-    private var _status = MutableLiveData<Int>()
-    val status: LiveData<Int> get() = _status
+    private var _deleteStatus = MutableLiveData<Int>()
+    val deleteStatus: LiveData<Int> get() = _deleteStatus
+
+    private var _updateStatus = MutableLiveData<Boolean>()
+    val updateStatus: LiveData<Boolean> get() = _updateStatus
 
     init {
+        fetchData()
+    }
+
+    private fun fetchData() {
         viewModelScope.launch {
             _schedules.value = dataRepository.fetchSchedules()
         }
@@ -36,15 +43,34 @@ class ScheduleViewModel @Inject constructor(
     fun handleScheduleDeletion(schedule: Schedule, pos: Int) {
         viewModelScope.launch {
             dataRepository.deleteSchedule(schedule.timeInMilli)
-            (application.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
-                PendingIntent.getBroadcast(
-                    application.applicationContext,
-                    schedule.timeInMilli.toInt(),
-                    Intent(application.applicationContext.packageManager.getLaunchIntentForPackage(schedule.packageName)),
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-            )
-            _status.value = pos
+            cancelAlarm(schedule)
+            _deleteStatus.value = pos
         }
+    }
+
+    fun handleScheduleUpdate(time: Long, schedule: Schedule) {
+        viewModelScope.launch {
+            dataRepository.deleteSchedule(schedule.timeInMilli)
+            cancelAlarm(schedule)
+            insertSchedule(Schedule(time, schedule.packageName))
+        }
+    }
+
+    private fun insertSchedule(schedule: Schedule) {
+        viewModelScope.launch {
+            dataRepository.insertScheule(schedule)
+            fetchData()
+        }
+    }
+
+    private fun cancelAlarm(schedule: Schedule) {
+        (application.getSystemService(Context.ALARM_SERVICE) as AlarmManager).cancel(
+            PendingIntent.getBroadcast(
+                application.applicationContext,
+                schedule.timeInMilli.toInt(),
+                Intent(application.applicationContext.packageManager.getLaunchIntentForPackage(schedule.packageName)),
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        )
     }
 }

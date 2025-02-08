@@ -12,7 +12,9 @@ import com.meldcx.appscheduler.databinding.FragmentScheduleBinding
 import com.meldcx.appscheduler.ui.adapters.ScheduleAdapter
 import com.meldcx.appscheduler.ui.listeners.ScheduleClickListener
 import com.meldcx.appscheduler.ui.viewmodels.ScheduleViewModel
+import com.meldcx.appscheduler.utils.TimeUtil
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ScheduleFragment : Fragment(), ScheduleClickListener {
@@ -49,12 +51,18 @@ class ScheduleFragment : Fragment(), ScheduleClickListener {
                     scheduleAdapter.addSchedules(it)
                 }
             }
-            vm.status.observe(viewLifecycleOwner) {
+            vm.deleteStatus.observe(viewLifecycleOwner) {
                 scheduleAdapter.updateSchedules(it)
                 if (scheduleAdapter.itemCount == 0) {
                     tvEmpty.visibility = View.VISIBLE
                     ivEmpty.visibility = View.VISIBLE
+                } else {
+                    tvEmpty.visibility = View.GONE
+                    ivEmpty.visibility = View.GONE
                 }
+            }
+            vm.updateStatus.observe(viewLifecycleOwner) {
+
             }
         }
     }
@@ -64,7 +72,13 @@ class ScheduleFragment : Fragment(), ScheduleClickListener {
         scheduleAdapter.checkForTimeUpdates()
     }
 
-    override fun onScheduleClick(schedule: Schedule, pos: Int) {
+    override fun onScheduleDeleteClick(schedule: Schedule, pos: Int) {
         vm.handleScheduleDeletion(schedule, pos)
+    }
+
+    override fun onScheduleEditClick(schedule: Schedule) {
+        TimeUtil(this) { time ->
+            vm.handleScheduleUpdate(time, schedule)
+        }.showDatePicker()
     }
 }

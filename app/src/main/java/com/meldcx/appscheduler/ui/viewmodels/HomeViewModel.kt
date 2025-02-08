@@ -19,6 +19,7 @@ import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
 import com.meldcx.appscheduler.receivers.AlarmReceiver
 import com.meldcx.appscheduler.utils.Constants
+import com.meldcx.appscheduler.utils.TimeUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -35,7 +36,9 @@ class HomeViewModel @Inject constructor(
     val toastObserver: LiveData<String> get() = _toastObserver
 
     init {
-        fetchApps()
+        viewModelScope.launch {
+            fetchApps()
+        }
     }
 
     fun verifySchedule(time: Long, app: App) {
@@ -43,27 +46,11 @@ class HomeViewModel @Inject constructor(
             if (dataRepository.checkIfScheduleExists(time)) {
                 _toastObserver.value = application.getString(R.string.app_scheduled_warning)
             } else {
-                scheduleAppLaunch(app.packageName, time)
+                TimeUtil.scheduleAppLaunch(application.applicationContext, app.packageName, time)
                 dataRepository.insertScheule(Schedule(time, app.packageName))
                 _toastObserver.value = "${app.name} scheduled for launch"
             }
         }
-    }
-
-    @SuppressLint("MissingPermission") // alternative permission added
-    private fun scheduleAppLaunch(packageName: String, time: Long) {
-        val context = application.applicationContext
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, AlarmReceiver::class.java).apply {
-            putExtra(Constants.PACKAGE_NAME_KEY, packageName)
-        }
-        val pendingIntent = PendingIntent.getBroadcast(
-            context,
-            time.toInt(),
-            intent,
-            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
     }
 
     fun fetchApps() {
