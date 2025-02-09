@@ -18,4 +18,7 @@ interface ScheduleDao {
 
     @Query("DELETE FROM schedules WHERE timeInMilli = :time")
     suspend fun deleteSchedule(time: Long)
+
+    @Query("SELECT * FROM schedules")
+    suspend fun getAllSchedules(): List<Schedule>
 }

@@ -80,6 +80,8 @@ class ScheduleAdapter(
                 }
                 cvEdit.setOnClickListener {
                     clickListener.onScheduleEditClick(schedule)
+                    cvDelete.visibility = View.GONE
+                    cvEdit.visibility = View.GONE
                 }
                 cvDelete.setOnClickListener {
                     clickListener.onScheduleDeleteClick(schedule, position)

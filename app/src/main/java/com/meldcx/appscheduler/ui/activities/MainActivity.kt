@@ -6,6 +6,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -79,7 +80,14 @@ class MainActivity : AppCompatActivity() {
                 } else {
                     isNewLaunch = false
                     WindowCompat.getInsetsController(window, window.decorView).show(WindowInsetsCompat.Type.navigationBars())
-                    supportActionBar?.show()
+                    supportActionBar?.let {
+                        it.show()
+                        it.setBackgroundDrawable(
+                            ColorDrawable(
+                                ContextCompat.getColor(this, R.color.blue)
+                            )
+                        )
+                    }
                     binding.bottomNavigationView.visibility = View.VISIBLE
                 }
             }

@@ -1,9 +1,6 @@
 package com.meldcx.appscheduler.ui.viewmodels
 
-import android.annotation.SuppressLint
-import android.app.AlarmManager
 import android.app.Application
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -17,8 +14,6 @@ import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.data.models.App
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
-import com.meldcx.appscheduler.receivers.AlarmReceiver
-import com.meldcx.appscheduler.utils.Constants
 import com.meldcx.appscheduler.utils.TimeUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

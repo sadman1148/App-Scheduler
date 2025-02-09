@@ -7,13 +7,6 @@
     android:orientation="vertical"
     tools:context=".ui.fragments.HomeFragment">
 
-    <View
-        android:id="@+id/border"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/gray"
-        app:layout_constraintBottom_toBottomOf="parent" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvApps"
         android:layout_width="match_parent"
@@ -21,7 +14,7 @@
         android:paddingTop="@dimen/ten_dp"
         android:paddingHorizontal="@dimen/five_dp"
         android:clipToPadding="false"
-        app:layout_constraintBottom_toTopOf="@id/border"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar

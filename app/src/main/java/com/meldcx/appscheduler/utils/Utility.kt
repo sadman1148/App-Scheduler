@@ -12,6 +12,7 @@ import com.google.android.material.timepicker.MaterialTimePicker
 import com.google.android.material.timepicker.TimeFormat
 import com.meldcx.appscheduler.R
 import com.meldcx.appscheduler.receivers.AlarmReceiver
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -94,6 +95,7 @@ class TimeUtil(
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+            Timber.d("scheduleAppLaunch() > alarm scheduled for $packageName at $time")
         }
     }
 }

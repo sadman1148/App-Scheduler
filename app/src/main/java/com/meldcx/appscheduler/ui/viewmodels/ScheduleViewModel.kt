@@ -11,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.data.repositories.DataRepository
+import com.meldcx.appscheduler.utils.TimeUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -42,22 +43,26 @@ class ScheduleViewModel @Inject constructor(
 
     fun handleScheduleDeletion(schedule: Schedule, pos: Int) {
         viewModelScope.launch {
-            dataRepository.deleteSchedule(schedule.timeInMilli)
-            cancelAlarm(schedule)
+            deleteAndCancelAlarm(schedule)
             _deleteStatus.value = pos
         }
     }
 
     fun handleScheduleUpdate(time: Long, schedule: Schedule) {
         viewModelScope.launch {
-            dataRepository.deleteSchedule(schedule.timeInMilli)
-            cancelAlarm(schedule)
+            deleteAndCancelAlarm(schedule)
             insertSchedule(Schedule(time, schedule.packageName))
         }
     }
 
+    private suspend fun deleteAndCancelAlarm(schedule: Schedule) {
+        dataRepository.deleteSchedule(schedule.timeInMilli)
+        cancelAlarm(schedule)
+    }
+
     private fun insertSchedule(schedule: Schedule) {
         viewModelScope.launch {
+            TimeUtil.scheduleAppLaunch(application.applicationContext, schedule.packageName, schedule.timeInMilli)
             dataRepository.insertScheule(schedule)
             fetchData()
         }

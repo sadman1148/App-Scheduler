@@ -26,7 +26,7 @@ class DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideMovieDao(db: ScheduleDatabase): ScheduleDao {
+    fun provideScheduleDao(db: ScheduleDatabase): ScheduleDao {
         return db.scheduleDao()
     }
 }

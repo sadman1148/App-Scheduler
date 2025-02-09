@@ -38,7 +38,7 @@ class HomeFragment : Fragment(), AppClickListener {
         super.onViewCreated(view, savedInstanceState)
         with(binding) {
             with(rvApps) {
-                layoutManager = GridLayoutManager(requireContext(), 2)
+                layoutManager = GridLayoutManager(requireContext(), 3)
                 adapter = appAdapter
             }
             btnRetry.setOnClickListener {

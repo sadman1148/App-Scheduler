@@ -1,4 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Base.Theme.AppScheduler" parent="Theme.Material3.Light" />
-    <style name="Theme.AppScheduler" parent="Base.Theme.AppScheduler" />
+
+    <style name="NavBarIndicator" parent="Widget.Material3.BottomNavigationView">
+        <item name="indicatorColor">@color/dark_blue</item>
+    </style>
+
+    <style name="Theme.AppScheduler" parent="Theme.Material3.Light">
+
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/dark_blue</item>
+        <item name="colorPrimaryContainer">@color/blue</item>
+        <item name="colorOnPrimaryContainer">@color/white</item>
+
+        <item name="colorSecondary">@color/blue</item>
+
+    </style>
+
 </resources>
