@@ -32,9 +32,10 @@ The **App Scheduler** is an app to schedule the launch of other installed applic
 - [EncryptedSharedPreferences](https://developer.android.com/reference/androidx/security/crypto/EncryptedSharedPreferences)
 
 ## Screenshots
-<img src="Screenshots/splash.png" width="200" alt="movie details"> <img src="Screenshots/apps_list.png" width="200" alt="movie list">
-<img src="Screenshots/empty_list.png" width="200" alt="show list"> <img src="Screenshots/schedule_list.png" width="200" alt="show list dark">
-<img src="Screenshots/schedule_list_edit_delete.png" width="200" alt="graph dark">
+<img src="Screenshots/splash.png" width="200" alt="splash screen"> <img src="Screenshots/apps_list.png" width="200" alt="apps list">
+<img src="Screenshots/empty_list.png" width="200" alt="empty apps list"> <img src="Screenshots/schedule_list.png" width="200" alt="apps list">
+<img src="Screenshots/schedule_list_edit_delete.png" width="200" alt="edit delete button revealed"> <img src="Screenshots/set_edit_time.png" width="200" alt="time picker">
+<img src="Screenshots/exit_confirmation.png" width="200" alt="exit confirmation">
 
 
 ## Getting Started
