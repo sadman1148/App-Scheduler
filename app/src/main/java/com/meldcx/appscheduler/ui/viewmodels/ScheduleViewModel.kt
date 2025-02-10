@@ -14,6 +14,7 @@ import com.meldcx.appscheduler.data.repositories.DataRepository
 import com.meldcx.appscheduler.utils.TimeUtil
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -56,6 +57,7 @@ class ScheduleViewModel @Inject constructor(
     }
 
     private suspend fun deleteAndCancelAlarm(schedule: Schedule) {
+        Timber.d("deleteAndCancelAlarm() > deleting alarm for ${schedule.packageName}")
         dataRepository.deleteSchedule(schedule.timeInMilli)
         cancelAlarm(schedule)
     }

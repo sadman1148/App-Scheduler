@@ -14,6 +14,7 @@ import com.meldcx.appscheduler.data.models.Schedule
 import com.meldcx.appscheduler.databinding.ScheduleRecyclerItemBinding
 import com.meldcx.appscheduler.ui.listeners.ScheduleClickListener
 import com.meldcx.appscheduler.utils.TimeUtil
+import timber.log.Timber
 
 class ScheduleAdapter(
     private val context: Context,
@@ -29,11 +30,15 @@ class ScheduleAdapter(
     }
 
     fun updateSchedules(pos: Int) {
+        Timber.d("updateSchedules > removing index $pos")
         schedules.removeAt(pos)
         notifyItemRemoved(pos)
+        notifyItemRangeChanged(pos, itemCount)
+        Timber.d("updateSchedules > updated schedules list: $schedules")
     }
 
     fun checkForTimeUpdates() {
+        Timber.d("checkForTimeUpdates > schedules list: $schedules")
         notifyItemRangeChanged(0, itemCount)
     }
 
@@ -56,6 +61,8 @@ class ScheduleAdapter(
             val timeParts = TimeUtil.parseTime(schedule.timeInMilli).split("_")
             with(binding) {
                 val isExpired = schedule.timeInMilli < System.currentTimeMillis()
+                cvDelete.visibility = View.GONE
+                cvEdit.visibility = View.GONE
                 tvAppName.text = appName
                 tvPackageName.text = schedule.packageName
                 tvTime.text = timeParts[0]
@@ -84,6 +91,7 @@ class ScheduleAdapter(
                     cvEdit.visibility = View.GONE
                 }
                 cvDelete.setOnClickListener {
+                    Timber.d("cvDelete onClick > position $position clicked for ${schedule.packageName}")
                     clickListener.onScheduleDeleteClick(schedule, position)
                 }
             }
